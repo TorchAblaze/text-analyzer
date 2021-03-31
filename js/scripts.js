@@ -33,44 +33,50 @@ function numberOfOccurrencesInText(word, text) {
   });
   return wordCount;
 }
+
 function mostUsedWords(text) {
   const wordArray = text.split(" ");
-  const topWords = ["How appears one times", 0 , 0 ];
+  const topWords = [0, 0, 0];
+  const repeatedWords = [];
   wordArray.forEach(function (word) {
     const wordOccurrences = numberOfOccurrencesInText(word, text);
-    console.log(wordOccurrences);
     if (wordOccurrences >= topWords[0]) {
-      if (!topWords.includes(word)) {
-        topWords[0] = word + " appears " + wordOccurrences + " times";
+      if (repeatedWords.includes(word) === false) {
+        // topWords[0] = word + " appears " + wordOccurrences + " times";
+        topWords.unshift(wordOccurrences);
+        repeatedWords.unshift(word);
       }
     }
     if (wordOccurrences >= topWords[1]) {
-      if (!topWords.includes(word)) {
-        topWords[1] = word + " appears " + wordOccurrences + " times";
+      if (repeatedWords.includes(word) === false) {
+        topWords.splice(1, 0, wordOccurrences);
+        repeatedWords.splice(1, 0, word);
       }
     }
-    if (wordOccurrences >= topWords[2]) {
-      if (!topWords.includes(word)) {
-        topWords[2] = word + " appears " + wordOccurrences + " times";
+    if (wordOccurrences > topWords[2]) {
+      if (repeatedWords.includes(word) === false) {
+        topWords.splice(2, 0, wordOccurrences);
+        repeatedWords.splice(2, 0, word);
       }
     }
-    return topWords;
   });
-  return console.log(topWords);
+  const message = `<br>${repeatedWords[0]}: ${topWords[0]} <br> ${repeatedWords[1]}: ${topWords[1]} <br> ${repeatedWords[2]}: ${topWords[2]}`
+  return message;
 }
-/*const wordCount = numberOfOccurrencesInText(word, text);
-(wordOccurrences > topWords[0])
-topWords[0] = word + "appears" + wordCount + "times"
 
-(wordOccurrences > topWords[1])
-topWords[1] = word + "appears" + wordCount + "times"
-
-
-topWords[2] = word + "appears" + wordCount + "times"
+function curseFilter(text) {
+  let curses = ["zoinks", "muppeteer", "biffaroni", "loopdaloop"]
+  const wordArray = text.split(" ");
+  wordArray.forEach(function (word) {
+    if (curses.includes(word)) {
+      curseAlert = true;
+      return console.log(curseAlert);
+    } else {
+      curseAlert = false;
+      return console.log(curseAlert);
+    }
+  });
 }
-currentWord++;*/
-// take input from first text box
-// Count how many times each word appears
 
 // UI Logic
 
@@ -100,9 +106,17 @@ $(document).ready(function () {
     const word = $("#word").val();
     const wordCount = wordCounter(passage);
     const occurrencesOfWord = numberOfOccurrencesInText(word, passage);
+    const topWords = mostUsedWords(passage);
+    let curseAlert;
+    curseFilter(passage);
+    if (curseAlert) {
+      $("div#operational").hide();
+      $("div#non-operational").show();
+    }
     $("#total-count").html(wordCount);
     $("#selected-count").html(occurrencesOfWord);
     $("#bolded-passage").html(boldPassage(word, passage));
-    console.log(mostUsedWords(passage));
+    $("#repeated-words").html(topWords);
+    console.log(topWords);
   });
 });
